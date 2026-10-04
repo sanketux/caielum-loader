@@ -1,0 +1,19 @@
+/* Preview subset from Caielum token source, main 71b49d1.
+   A consuming app can use @sanketux/react/styles.css instead. */
+:root {
+  --cai-surface-bg-page: #ffffff;
+  --cai-surface-bg-canvas: #f4f0ed;
+  --cai-surface-bg-secondary: #e8e3de;
+  --cai-surface-bg-brand: #133d63;
+  --cai-surface-bg-brand-subtle: #eff7ff;
+  --cai-surface-bg-accent-subtle: #fff5de;
+  --cai-surface-text-primary: #110f0e;
+  --cai-surface-text-secondary: #5e5a56;
+  --cai-surface-text-brand: #133d63;
+  --cai-surface-text-inverse: #ffffff;
+  --cai-border-color-subtle: #e8e3de;
+  --cai-border-color-focus: #133d63;
+  --cai-color-secondary-sky-sky-main: #a8d8f7;
+  --cai-color-primary-1000: #00203d;
+  --cai-scale-64: 64px;
+}

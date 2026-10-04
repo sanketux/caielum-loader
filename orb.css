@@ -1,0 +1,63 @@
+/* Caielum Loader Orb. CSS variables work with the existing Caielum stylesheet.
+   Fallback values are copied from the source token palette, not a new theme. */
+.cai-loader-orb {
+  --_orb-size: var(--cai-loader-orb-size, var(--cai-scale-64, 64px));
+  display: inline-block;
+  position: relative;
+  inline-size: var(--_orb-size);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  vertical-align: middle;
+  isolation: isolate;
+}
+.cai-loader-orb::before {
+  content: '';
+  position: absolute;
+  inset: -18%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle, var(--cai-color-secondary-sky-sky-main, #a8d8f7) 24%, transparent 69%);
+  opacity: var(--_orb-glow, 0.25);
+}
+.cai-loader-orb__canvas,
+.cai-loader-orb__fallback {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+.cai-loader-orb__canvas { display: none; }
+.cai-loader-orb[data-renderer="webgl"] > .cai-loader-orb__canvas { display: block; }
+.cai-loader-orb[data-renderer="webgl"] > .cai-loader-orb__fallback { visibility: hidden; }
+.cai-loader-orb__fallback {
+  inset: 6%;
+  inline-size: 88%;
+  block-size: 88%;
+  border-radius: var(--_orb-round-a, 50%) var(--_orb-round-b, 50%);
+  background:
+    radial-gradient(ellipse at 32% 24%, color-mix(in srgb, var(--cai-surface-bg-brand-subtle, #eff7ff) var(--_orb-shine, 70%), transparent) 0%, transparent 25%),
+    radial-gradient(ellipse at 65% 52%, var(--cai-color-secondary-sky-sky-main, #a8d8f7) 0%, transparent 53%),
+    radial-gradient(circle at 38% 38%, var(--cai-surface-bg-brand, #133d63) 20%, var(--cai-color-primary-1000, #00203d) 88%);
+  animation: cai-orb-turn var(--_orb-duration, 7s) linear infinite;
+}
+.cai-loader-orb[data-motion="paused"] > .cai-loader-orb__fallback { animation-play-state: paused; }
+@keyframes cai-orb-turn {
+  50% { border-radius: var(--_orb-round-b, 50%) var(--_orb-round-a, 50%); }
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cai-loader-orb__fallback { animation: none; }
+}
+@media (forced-colors: active) {
+  .cai-loader-orb::before { display: none; }
+  .cai-loader-orb > .cai-loader-orb__canvas { display: none !important; }
+  .cai-loader-orb > .cai-loader-orb__fallback {
+    visibility: visible !important;
+    forced-color-adjust: none;
+    background: CanvasText;
+    border: 2px solid Canvas;
+    outline: 1px solid CanvasText;
+  }
+}

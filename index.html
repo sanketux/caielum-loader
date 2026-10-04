@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0ed">
+  <title>Loader orb · Caielum</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./orb.css">
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: light; }
+    body { margin: 0; background: var(--cai-surface-bg-canvas); color: var(--cai-surface-text-primary); font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--cai-border-color-focus); outline-offset: 4px; }
+    .shell { width: min(960px, calc(100% - 64px)); margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--cai-border-color-subtle); }
+    .brand { font-size: 21px; color: var(--cai-surface-text-brand); font-weight: 600; letter-spacing: -0.9px; }
+    .brand span { font-weight: 400; letter-spacing: 0; font-size: 12px; margin-left: 12px; color: var(--cai-surface-text-secondary); }
+    .tag { border: 1px solid var(--cai-border-color-subtle); padding: 4px 10px; border-radius: 999px; font-size: 11px; letter-spacing: 0.05em; color: var(--cai-surface-text-secondary); }
+    main { padding: 42px 0 24px; }
+    .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; }
+    .eyebrow { color: var(--cai-surface-text-brand); font-size: 11px; letter-spacing: 0.11em; margin: 0 0 10px; text-transform: uppercase; }
+    h1 { font-size: clamp(30px, 5vw, 42px); font-weight: 600; line-height: 1.15; letter-spacing: -1.4px; margin: 0; }
+    .intro p:last-child { color: var(--cai-surface-text-secondary); max-width: 285px; margin: 0; font-size: 13px; }
+    .specimen { background: var(--cai-surface-bg-page); border: 1px solid var(--cai-border-color-subtle); border-radius: 20px; overflow: hidden; }
+    .stage { --stage-bg: var(--cai-surface-bg-page); background: var(--stage-bg); min-height: 300px; position: relative; display: grid; place-items: center; transition: background 250ms ease; }
+    .stage-caption { position: absolute; top: 20px; left: 24px; color: var(--cai-surface-text-secondary); font-size: 11px; }
+    .stage-index { position: absolute; top: 20px; right: 24px; color: var(--cai-surface-text-secondary); font-size: 11px; }
+    .orb-place { display: grid; place-items: center; width: 100%; padding: 52px 24px 46px; }
+    .stage-foot { position: absolute; bottom: 19px; width: 100%; text-align: center; color: var(--cai-surface-text-secondary); font-size: 11px; }
+    .toolbar { padding: 20px 24px; display: flex; align-items: center; flex-wrap: wrap; gap: 24px; border-top: 1px solid var(--cai-border-color-subtle); }
+    .control { display: flex; align-items: center; flex-wrap: wrap; max-width: 100%; gap: 12px; }
+    .control-label { color: var(--cai-surface-text-secondary); font-size: 12px; }
+    .swatches { display: flex; gap: 6px; }
+    .swatch { width: 28px; height: 28px; border: 1px solid var(--cai-border-color-subtle); border-radius: 50%; padding: 0; background: var(--swatch); }
+    .swatch[aria-pressed="true"] { outline: 1px solid var(--cai-border-color-focus); outline-offset: 3px; }
+    .sizes { display: flex; padding: 3px; border-radius: 8px; background: var(--cai-surface-bg-canvas); gap: 2px; }
+    .sizes button { background: transparent; border: 0; border-radius: 6px; min-width: 33px; height: 28px; padding: 0 7px; font-size: 11px; color: var(--cai-surface-text-secondary); }
+    .sizes button[aria-pressed="true"] { color: var(--cai-surface-text-inverse); background: var(--cai-surface-bg-brand); }
+    .pause { border: 1px solid var(--cai-border-color-subtle); color: var(--cai-surface-text-brand); background: var(--cai-surface-bg-page); border-radius: 8px; padding: 7px 12px; font-size: 12px; margin-left: auto; min-width: 78px; }
+    .tuning { border-top: 1px solid var(--cai-border-color-subtle); padding: 20px 24px 24px; }
+    .tuning-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .tuning h2 { font-size: 13px; font-weight: 600; margin: 0; color: var(--cai-surface-text-brand); }
+    .reset { border: 0; padding: 4px 0; background: transparent; color: var(--cai-surface-text-secondary); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+    .tuning-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+    .slider-head, .slider-ends { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .slider-head label { color: var(--cai-surface-text-brand); font-size: 13px; }
+    .slider-head output { color: var(--cai-surface-text-secondary); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .tuning input[type="range"] { display: block; width: 100%; margin: 8px 0 4px; height: 28px; accent-color: var(--cai-surface-bg-brand); cursor: pointer; }
+    .slider-ends { font-size: 10px; color: var(--cai-surface-text-secondary); }
+    @media(max-width: 800px) { .tuning-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+    @media(max-width: 370px) { .tuning-grid { grid-template-columns: 1fr; } }
+    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 30px; }
+    .detail { padding-top: 17px; border-top: 1px solid var(--cai-border-color-subtle); }
+    .detail h2 { margin: 0 0 16px; color: var(--cai-surface-text-secondary); font-size: 11px; font-weight: 400; letter-spacing: .07em; text-transform: uppercase; }
+    .inline-example { height: 62px; display: flex; align-items: center; gap: 12px; color: var(--cai-surface-text-brand); }
+    .inline-example span:last-child { font-size: 14px; }
+    .palette { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; height: 62px; }
+    .palette-item { display: flex; gap: 8px; align-items: center; }
+    .palette-dot { display: block; border-radius: 50%; width: 14px; height: 14px; background: var(--dot); }
+    .palette-item span:last-child { font-size: 12px; color: var(--cai-surface-text-secondary); }
+    footer { display: flex; justify-content: space-between; gap: 16px; padding: 24px 0 30px; color: var(--cai-surface-text-secondary); font-size: 11px; }
+    @media(max-width: 700px) {
+      .shell { width: calc(100% - 32px); }
+      header { padding: 20px 0; }
+      .brand span { display: none; }
+      main { padding-top: 28px; }
+      .intro { display: block; }
+      .intro p:last-child { margin-top: 13px; max-width: none; }
+      .stage { min-height: 270px; }
+      .toolbar { gap: 18px; padding: 18px; }
+      .pause { margin-left: 0; }
+      .details { gap: 22px; grid-template-columns: 1fr; }
+      .palette { height: auto; padding: 4px 0; }
+      footer { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) { .stage { transition: none; } }
+    @media (pointer: coarse) { .swatch, .sizes button, .pause { min-width: 44px; min-height: 44px; } .swatches { gap: 8px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header><div class="brand">caielum<span>Design system</span></div><span class="tag">COMPONENT STUDY 01</span></header>
+    <main>
+      <div class="intro">
+        <div><p class="eyebrow">Feedback / Indeterminate</p><h1>Loader orb</h1></div>
+        <p>A little movement while things come together. Navy depth, soft sky reflections.</p>
+      </div>
+      <section class="specimen" aria-label="Interactive loader preview">
+        <div class="stage" id="stage">
+          <span class="stage-caption" id="surface-name">White surface</span>
+          <span class="stage-index" id="size-label">64 × 64 px</span>
+          <div class="orb-place"><span id="hero-orb" class="cai-loader-orb" role="status" aria-label="Loading preview"></span></div>
+          <span class="stage-foot" id="motion-label">Slow, continuous motion</span>
+        </div>
+        <div class="toolbar">
+          <div class="control"><span class="control-label">Surface</span><div class="swatches" role="group" aria-label="Preview surface">
+            <button class="swatch" style="--swatch:var(--cai-surface-bg-page)" aria-label="White" aria-pressed="true" data-surface="page"></button>
+            <button class="swatch" style="--swatch:var(--cai-surface-bg-brand-subtle)" aria-label="Sky tint" aria-pressed="false" data-surface="brand-subtle"></button>
+            <button class="swatch" style="--swatch:var(--cai-surface-bg-canvas)" aria-label="Warm canvas" aria-pressed="false" data-surface="canvas"></button>
+            <button class="swatch" style="--swatch:var(--cai-surface-bg-accent-subtle)" aria-label="Gold tint" aria-pressed="false" data-surface="accent-subtle"></button>
+          </div></div>
+          <div class="control"><span class="control-label">Size</span><div class="sizes" role="group" aria-label="Orb size in pixels">
+            <button data-size="8" aria-pressed="false">8</button>
+            <button data-size="24" aria-pressed="false">24</button>
+            <button data-size="48" aria-pressed="false">48</button>
+            <button data-size="64" aria-pressed="true">64</button>
+            <button data-size="192" aria-pressed="false" aria-label="192 pixels, detail view">192</button>
+          </div></div>
+          <button class="pause" id="pause" aria-pressed="false">Pause</button>
+        </div>
+        <section class="tuning" aria-labelledby="tuning-title">
+          <div class="tuning-head"><h2 id="tuning-title">Make it your own</h2><button class="reset" id="reset-tuning" type="button">Reset tuning</button></div>
+          <div class="tuning-grid">
+            <div><div class="slider-head"><label for="speed">Speed</label><output id="speed-value" for="speed">1×</output></div><input id="speed" type="range" min="0" max="2" step="0.05" value="1" data-tune="speed" aria-valuetext="1×"><div class="slider-ends"><span>Still</span><span>2×</span></div></div>
+            <div><div class="slider-head"><label for="fluidity">Fluidity</label><output id="fluidity-value" for="fluidity">30%</output></div><input id="fluidity" type="range" min="0" max="100" step="1" value="30" data-tune="fluidity" aria-valuetext="30%"><div class="slider-ends"><span>Rigid</span><span>Liquid</span></div></div>
+            <div><div class="slider-head"><label for="glow">Glow</label><output id="glow-value" for="glow">25%</output></div><input id="glow" type="range" min="0" max="100" step="1" value="25" data-tune="glow" aria-valuetext="25%"><div class="slider-ends"><span>Off</span><span>Soft halo</span></div></div>
+            <div><div class="slider-head"><label for="gloss">Gloss</label><output id="gloss-value" for="gloss">70%</output></div><input id="gloss" type="range" min="0" max="100" step="1" value="70" data-tune="gloss" aria-valuetext="70%"><div class="slider-ends"><span>Matte</span><span>Polished</span></div></div>
+          </div>
+        </section>
+      </section>
+      <div class="details">
+        <section class="detail"><h2>In context · 24 px</h2><div class="inline-example" role="status"><span id="inline-orb" class="cai-loader-orb" style="--cai-loader-orb-size:24px" aria-hidden="true"></span><span>Finding your next escape…</span></div></section>
+        <section class="detail"><h2>From the Caielum palette</h2><div class="palette">
+          <div class="palette-item"><span class="palette-dot" style="--dot:var(--cai-surface-bg-brand)"></span><span>Navy 900</span></div>
+          <div class="palette-item"><span class="palette-dot" style="--dot:var(--cai-color-secondary-sky-sky-main)"></span><span>Sky 300</span></div>
+          <div class="palette-item"><span class="palette-dot" style="--dot:var(--cai-color-primary-1000)"></span><span>Navy 1000</span></div>
+        </div></section>
+      </div>
+    </main>
+    <footer><span>64 px default · Responsive · Bright surfaces</span><span id="render-note">Respects reduced motion</span></footer>
+  </div>
+  <script type="module">
+    import { mountLoaderOrb } from './orb.js';
+    const root = document.getElementById('hero-orb');
+    const fallback = new URLSearchParams(location.search).has('fallback');
+    const hero = mountLoaderOrb(root, { webgl: !fallback });
+    const inline = mountLoaderOrb(document.getElementById('inline-orb'), { webgl: !fallback });
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    let paused = false;
+    const defaults = { speed: 1, fluidity: 0.3, glow: 0.25, gloss: 0.7 };
+    const tuning = { ...defaults };
+    const updateMotionLabel = () => {
+      document.getElementById('motion-label').textContent = media.matches ? 'Still · Reduced motion enabled' : paused ? 'Still · Motion paused' : tuning.speed === 0 ? 'Still · Speed set to zero' : `Continuous motion · ${tuning.speed}×`;
+    };
+    const applyTuning = () => {
+      hero.setOptions(tuning);
+      inline.setOptions(tuning);
+      document.querySelectorAll('[data-tune]').forEach(input => {
+        const key = input.dataset.tune;
+        input.value = String(tuning[key] * (key === 'speed' ? 1 : 100));
+        const text = key === 'speed' ? `${tuning[key]}×` : `${Math.round(tuning[key] * 100)}%`;
+        document.getElementById(`${key}-value`).value = text;
+        input.setAttribute('aria-valuetext', text);
+      });
+      updateMotionLabel();
+    };
+    document.querySelectorAll('[data-tune]').forEach(input => input.addEventListener('input', () => {
+      tuning[input.dataset.tune] = Number(input.value) / (input.dataset.tune === 'speed' ? 1 : 100);
+      applyTuning();
+    }));
+    document.getElementById('reset-tuning').addEventListener('click', () => { Object.assign(tuning, defaults); applyTuning(); });
+    updateMotionLabel();
+    media.addEventListener('change', updateMotionLabel);
+    document.querySelectorAll('[data-size]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-size]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      root.style.setProperty('--cai-loader-orb-size', `${button.dataset.size}px`);
+      document.getElementById('size-label').textContent = `${button.dataset.size} × ${button.dataset.size} px${button.dataset.size === '192' ? ' · Detail' : ''}`;
+    }));
+    document.querySelectorAll('[data-surface]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-surface]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      document.getElementById('stage').style.setProperty('--stage-bg', `var(--cai-surface-bg-${button.dataset.surface})`);
+      document.getElementById('surface-name').textContent = `${button.getAttribute('aria-label')} surface`;
+    }));
+    document.getElementById('pause').addEventListener('click', (event) => {
+      paused = !paused;
+      hero.setPaused(paused);
+      inline.setPaused(paused);
+      event.currentTarget.textContent = paused ? 'Play' : 'Pause';
+      event.currentTarget.setAttribute('aria-pressed', String(paused));
+      updateMotionLabel();
+    });
+    if (fallback) document.getElementById('render-note').textContent = 'Fallback preview · CSS';
+    window.addEventListener('pagehide', (event) => { if (!event.persisted) { hero.dispose(); inline.dispose(); } });
+  </script>
+</body>
+</html>

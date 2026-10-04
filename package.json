@@ -1,0 +1,11 @@
+{
+  "name": "caielum-loader",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Responsive Caielum WebGL loader orb for React and HTML.",
+  "scripts": {
+    "test": "node tests/lifecycle.mjs",
+    "check": "node --check orb.js && npm test"
+  }
+}
