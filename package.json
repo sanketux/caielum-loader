@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Responsive Caielum WebGL loader orb for React and HTML.",
   "scripts": {
+    "build": "node scripts/build.mjs",
     "test": "node tests/lifecycle.mjs",
     "check": "node --check orb.js && npm test"
   }
